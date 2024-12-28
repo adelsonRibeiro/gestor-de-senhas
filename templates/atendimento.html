@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,17 +35,20 @@
             padding: 20px;
             text-align: center;
             box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
-            width: 100%; /* Ocupa 100% do container */
+            width: 100%;
+            /* Ocupa 100% do container */
         }
 
         .senha-container h2 {
-            margin-top: 0; /* Remove a margem superior padrão do h2 */
+            margin-top: 0;
+            /* Remove a margem superior padrão do h2 */
         }
 
         #senha {
             font-size: 3em;
             color: #333;
-            margin: 10px 0; /* Adiciona margem vertical */
+            margin: 10px 0;
+            /* Adiciona margem vertical */
         }
 
         .acoes-container {
@@ -52,7 +56,8 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 10px;
-            width: 100%; /* Ocupa 100% do container */
+            width: 100%;
+            /* Ocupa 100% do container */
         }
 
         .botao {
@@ -67,7 +72,8 @@
             flex: 1 1 45%;
             min-width: 120px;
             box-sizing: border-box;
-            text-align: center; /* Centraliza o texto dentro do botão */
+            text-align: center;
+            /* Centraliza o texto dentro do botão */
         }
 
         .botao:hover {
@@ -106,8 +112,10 @@
             #senha {
                 font-size: 2.5em;
             }
+
             .fila-container {
-                display: none; /* Oculta a fila em tablets e celulares */
+                display: none;
+                /* Oculta a fila em tablets e celulares */
             }
 
         }
@@ -116,61 +124,15 @@
             #senha {
                 font-size: 2em;
             }
+
             .botao {
                 flex: 1 1 90%;
                 margin: 5px 0;
             }
         }
     </style>
-    <script>
-        const socket = io("/clientes");
-        const socketPainel = io("/senha-painel")
-        var clientes_ativos = null
-        var lista_vazia = 'sim'
-        var ultima_lista
-        socket.on('message', (msg) => {
-            return clientes_ativos = msg
-        }
-        )
-        
-        function enviaSenhaPainel(senhaChamada) {
-            socketPainel.send(senhaChamada);
-        }
-
-        function consultaClientes() {
-            setInterval(() => {
-                socket.send(lista_vazia);
-                const lista_clientes = document.getElementById("lista");
-                const contador = document.getElementById("contador")
-                if (ultima_lista === senha.textContent) {
-					lista.innerHTML = '<li></li>'
-				}
-                let resultado = "";
-                if (clientes_ativos != null) {
-                    if (clientes_ativos.length != 0 ) {
-                        ultima_lista = clientes_ativos.toString();
-                        var tamanho_lista = clientes_ativos.length - 1 
-                        for (let i = 0; i < 10; i++) {
-                            console.log(i)
-                            resultado += '<li>'+clientes_ativos[i]+'</li>'
-                            if (tamanho_lista === i){
-                                break
-                            }
-                        };
-                        lista.innerHTML = resultado
-                        if (clientes_ativos.length > 9) {
-                            let quantidade =  clientes_ativos.length - 10
-                            contador.innerHTML = '+ '+quantidade+' clientes'
-                        }   
-                    }
-                }
-
-                lista_vazia = 'nao'
-            }, 1500);
-        }
-        window.onload = consultaClientes()
-    </script>
 </head>
+
 <body>
     <div class="container">
         <div class="fila-container">
@@ -184,25 +146,69 @@
             <div id="senha">000</div>
         </div>
         <div class="acoes-container">
-            <button class="botao" id="chamar"  onclick="chamaCliente()" onclick="enviaSenhaPainel(10)">CHAMAR</button>
+            <button class="botao" id="chamar" onclick="chamaCliente()" onclick="enviaSenhaPainel(10)">CHAMAR</button>
             <button class="botao" id="repetir" disabled>REPETIR</button>
-            <button class="botao" id="ausente" disabled onclick="marcaAusente()" >AUSENTE</button>
+            <button class="botao" id="ausente" disabled onclick="marcaAusente()">AUSENTE</button>
             <button class="botao" id="finalizar" disabled onclick="marcaFinalizado()">FINALIZAR</button>
         </div>
     </div>
 </body>
 <script>
+    const socket = io("/clientes");
+    const socketPainel = io("/senha-painel")
     const senhaAtual = document.getElementById('senha')
     const btnReptir = document.getElementById("repetir")
     const btnAusente = document.getElementById("ausente")
     const btnFinalizar = document.getElementById("finalizar")
+    const lista_clientes = document.getElementById("lista");
+    const contador = document.getElementById("contador")
+
+    var clientes_ativos = null
+    var lista_vazia = 'sim'
+    var ultima_lista
+
+    socket.on('message', (msg) => {
+        console.log('msg')
+        clientes_ativos = msg
+        consultaClientes()
+    }
+    )
+
+    function enviaSenhaPainel(senhaChamada) {
+        socketPainel.send(senhaChamada);
+    }
+
+    function consultaClientes() {
+        if (ultima_lista === senha.textContent) {
+            lista.innerHTML = '<li></li>'
+        }
+        let resultado = "";
+        if (clientes_ativos != null) {
+            if (clientes_ativos.length != 0) {
+                ultima_lista = clientes_ativos.toString();
+                var tamanho_lista = clientes_ativos.length - 1
+                for (let i = 0; i < 10; i++) {
+                    console.log(i)
+                    resultado += '<li>' + clientes_ativos[i] + '</li>'
+                    if (tamanho_lista === i) {
+                        break
+                    }
+                };
+                lista.innerHTML = resultado
+                if (clientes_ativos.length > 9) {
+                    let quantidade = clientes_ativos.length - 10
+                    contador.innerHTML = '+ ' + quantidade + ' clientes'
+                }
+            }
+        }
+    }
 
     function ativaBtn() {
         btnAusente.disabled = false;
         btnFinalizar.disabled = false;
         btnReptir.disabled = false;
     }
-    
+
     function desativaBtn(prams) {
         btnAusente.setAttribute("disabled", true);
         btnFinalizar.setAttribute("disabled", true);
@@ -211,30 +217,31 @@
 
     function chamaCliente() {
         fetch('/chama_cliente')
-                .then(response => response.text())
-                    .then(data => {
-                    console.log(data)
-                    senhaAtual.innerHTML = data;
-                    enviaSenhaPainel(data)
-                    ativaBtn()
-                });
+            .then(response => response.text())
+            .then(data => {
+                console.log(data)
+                senhaAtual.innerHTML = data;
+                enviaSenhaPainel(data)
+                ativaBtn()
+            });
     }
 
     function marcaAusente() {
         fetch('/ausente').then(data => {
-                        senhaAtual.innerHTML = '000';
-                        desativaBtn();
-                });
+            senhaAtual.innerHTML = '000';
+            desativaBtn();
+        });
 
     }
 
     function marcaFinalizado() {
         fetch('/finalizar').then(data => {
-                senhaAtual.innerHTML = '000';
-                desativaBtn();
+            senhaAtual.innerHTML = '000';
+            desativaBtn();
         });
     }
 
-
+    socket.send();
+    consultaClientes()
 </script>
 </html>
