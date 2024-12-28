@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from flask_socketio import SocketIO, send
+from flask_socketio import SocketIO, send, emit
 from servicos import Connection
 import os
 
@@ -7,7 +7,6 @@ import os
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
-nova_senha=True
 caminho_banco = os.getenv("caminho_banco", "database/db.db")
 
 
@@ -18,31 +17,28 @@ def home():
 
 @app.route('/gera_senha_normal')
 def gera_senha_normal():
-    global nova_senha
     conexao = Connection(caminho_banco)
     senha = conexao.gera_senha('N')
     print(senha)
-    nova_senha=True
+    mensagem()
     return str(senha)
 
 
 @app.route('/gera_senha_prioridade')
 def gera_senha_prioritaria():
-    global nova_senha
     conexao = Connection(caminho_banco)
     senha = conexao.gera_senha('P')
     print(senha)
-    nova_senha=True
+    mensagem()
     return str(senha)
 
 
 @app.route('/chama_cliente')
 def chamar_cliente():
-    global nova_senha
     try:
         conexao = Connection(caminho_banco)
         cliente_atual = conexao.chama_cliente()
-        nova_senha=True
+        mensagem()
         return cliente_atual
     except Exception:
         return 'Não foi encontrado nenhuma senha'
@@ -50,11 +46,10 @@ def chamar_cliente():
 
 @app.route('/finalizar')
 def finalizar():
-    global nova_senha
     try:
         conexao = Connection(caminho_banco)
         conexao.finaliza_atendimento()
-        nova_senha=True
+        mensagem()
         return 'ok'
     except Exception as e:
         return e
@@ -62,32 +57,24 @@ def finalizar():
 
 @app.route('/ausente')
 def ausente():
-    global nova_senha
     try:
         conexao = Connection(caminho_banco)
         conexao.marca_ausente()
-        nova_senha=True
+        mensagem()
         return 'ok'
     except Exception as e:
         return e
     
 
 @socketio.on('message', namespace="/clientes")
-def mensagem(lista):
-    global nova_senha
-    if lista == 'sim':
-        nova_senha = True
-    if nova_senha:
-        conexao = Connection(caminho_banco)
-        ativos = conexao.consulta_ativos()
-        nova_senha = False
-        send(ativos)
-    else:
-        send(None)
+def mensagem():
+    conexao = Connection(caminho_banco)
+    ativos = conexao.consulta_ativos()
+    send(ativos, broadcast=True, namespace='/clientes')
 
 
 @socketio.on('message', namespace="/senha-painel")
-def mensagem(msg):
+def mensagem_painel(msg):
     send(msg, broadcast=True)
 
 
