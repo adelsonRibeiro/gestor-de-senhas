@@ -5,6 +5,7 @@ Este projeto é uma aplicação web simples para gerenciamento de senhas em um a
 Demonstração
 
 Você pode acessar uma demonstração funcional do projeto [clicando aqui](https://gestor-de-senhas.onrender.com)
+Detalhe importante: o servidor do render hiberna apos um tempo sem uso, então ao abrir pode ser que demore cerca de 30/40 segundos para carregar
 
 Funcionalidades
 
