@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Guia Rápido - Gerador de Senhas</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        color: #333;
+        text-align: center;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        color: #663399;
+    }
+
+    .buttons {
+        margin-top: 20px;
+    }
+
+    .btn {
+        background-color: #663399;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .btn:hover {
+        background-color: #552b7f;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <h1>Guia Rápido</h1>
+        <p>Bem-vindo ao sistema de gerenciamento de filas! Este guia irá te auxiliar a utilizar todas as funcionalidades
+            da aplicação.</p>
+
+        <h2>Tela de Recepção</h2>
+        <p>Nesta tela, você gerará as senhas para os clientes. Existem dois tipos de atendimento:</p>
+        <ul>
+            <li><strong>Atendimento Normal:</strong> Para clientes com atendimento padrão.</li>
+            <li><strong>Atendimento Prioritário:</strong> Para clientes que necessitam de atendimento imediato.</li>
+        </ul>
+
+        <h2>Tela de Atendimento</h2>
+        <p>Aqui você controlará o fluxo de atendimento. As opções disponíveis são:</p>
+        <ul>
+            <li><strong>Chamar:</strong> Chama o próximo cliente da fila.</li>
+            <li><strong>Repetir:</strong> Chama novamente o cliente atual.</li>
+            <li><strong>Ausente:</strong> Marca o cliente como ausente.</li>
+            <li><strong>Finalizado:</strong> Finaliza o atendimento do cliente atual.</li>
+        </ul>
+
+        <h2>Tela de Painel</h2>
+        <p>Nesta tela, é exibida a senha do cliente que está sendo atendido ou que foi chamada.</p>
+
+        <div class="buttons">
+            <a href="/recepcao" class="btn">Ir para Recepção</a>
+            <a href="/atendimento" class="btn">Ir para Atendimento</a>
+            <a href="/painel" class="btn">Ir para Painel</a>
+        </div>
+    </div>
+</body>
+
+</html>

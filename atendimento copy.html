@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+    <title>Painel de Senhas</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 90%;
+            max-width: 500px;
+            gap: 20px;
+        }
+
+        .senha-container {
+            background-color: white;
+            border: 2px solid #800080;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+            width: 100%; /* Ocupa 100% do container */
+        }
+
+        .senha-container h2 {
+            margin-top: 0; /* Remove a margem superior padrão do h2 */
+        }
+
+        #senha {
+            font-size: 3em;
+            color: #333;
+            margin: 10px 0; /* Adiciona margem vertical */
+        }
+
+        .acoes-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            width: 100%; /* Ocupa 100% do container */
+        }
+
+        .botao {
+            background-color: #800080;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            flex: 1 1 45%;
+            min-width: 120px;
+            box-sizing: border-box;
+            text-align: center; /* Centraliza o texto dentro do botão */
+        }
+
+        .botao:hover {
+            background-color: #660066;
+        }
+
+        /* Estilos para a Fila (removida em telas menores) */
+        .fila-container {
+            background-color: white;
+            border: 2px solid #800080;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        .fila-container ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .fila-container li {
+            font-size: 16px;
+            line-height: 1.5;
+            padding: 10px 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .fila-container li:last-child {
+            border-bottom: none;
+        }
+
+
+        @media (max-width: 768px) {
+            #senha {
+                font-size: 2.5em;
+            }
+            .fila-container {
+                display: none; /* Oculta a fila em tablets e celulares */
+            }
+
+        }
+
+        @media (max-width: 480px) {
+            #senha {
+                font-size: 2em;
+            }
+            .botao {
+                flex: 1 1 90%;
+                margin: 5px 0;
+            }
+        }
+    </style>
+    <script>
+        const socket = io("http://127.0.0.1:5000/");
+        const socketPainel = io("http://127.0.0.1:5000/senha-painel")
+        var clientes_ativos = null
+        var lista_vazia = 'sim'
+        var ultima_lista
+        socket.on('message', (msg) => {
+            return clientes_ativos = msg
+        }
+        )
+        
+        function enviaSenhaPainel(numero) {
+            socketPainel.send(numero);
+        }
+
+        function consultaClientes() {
+            setInterval(() => {
+                socket.send(lista_vazia);
+                const lista_clientes = document.getElementById("lista");
+                const contador = document.getElementById("contador")
+                if (ultima_lista === senha.textContent) {
+					lista.innerHTML = '<li></li>'
+				}
+                let resultado = "";
+                if (clientes_ativos != null) {
+                    if (clientes_ativos.length != 0 ) {
+                        ultima_lista = clientes_ativos.toString();
+                        var tamanho_lista = clientes_ativos.length - 1 
+                        for (let i = 0; i < 10; i++) {
+                            console.log(i)
+                            resultado += '<li>'+clientes_ativos[i]+'</li>'
+                            if (tamanho_lista === i){
+                                break
+                            }
+                        };
+                        lista.innerHTML = resultado
+                        if (clientes_ativos.length > 9) {
+                            let quantidade =  clientes_ativos.length - 10
+                            contador.innerHTML = '+ '+quantidade+' clientes'
+                        }   
+                    }
+                }
+
+                lista_vazia = 'nao'
+            }, 100);
+        }
+        window.onload = consultaClientes()
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="fila-container">
+            <h2>Fila de Espera</h2>
+            <ul id="lista">
+            </ul>
+            <h2 id="contador"></h2>
+        </div>
+        <div class="senha-container">
+            <h2 id="senha-atual">SENHA ATUAL</h2>
+            <div id="senha">000</div>
+        </div>
+        <div class="acoes-container">
+            <button class="botao" id="chamar"  onclick="chamaCliente()" onclick="enviaSenhaPainel(10)">CHAMAR</button>
+            <button class="botao" id="repetir" disabled>REPETIR</button>
+            <button class="botao" id="ausente" disabled onclick="marcaAusente()" >AUSENTE</button>
+            <button class="botao" id="finalizar" disabled onclick="marcaFinalizado()">FINALIZAR</button>
+        </div>
+    </div>
+</body>
+<script>
+    const senhaAtual = document.getElementById('senha')
+    const btnReptir = document.getElementById("repetir")
+    const btnAusente = document.getElementById("ausente")
+    const btnFinalizar = document.getElementById("finalizar")
+
+    function ativaBtn() {
+        btnAusente.disabled = false;
+        btnFinalizar.disabled = false;
+        btnReptir.disabled = false;
+    }
+    
+    function desativaBtn(prams) {
+        btnAusente.setAttribute("disabled", true);
+        btnFinalizar.setAttribute("disabled", true);
+        btnReptir.setAttribute("disabled", true);
+    }
+
+    function chamaCliente() {
+        fetch('http://127.0.0.1:5000/chama_cliente')
+                .then(response => response.text())
+                    .then(data => {
+                    console.log(data)
+                    senhaAtual.innerHTML = data;
+                    ativaBtn()
+                });
+    }
+
+    function marcaAusente() {
+        fetch('http://127.0.0.1:5000/ausente').then(data => {
+                        senhaAtual.innerHTML = '000';
+                        desativaBtn();
+                });
+
+    }
+
+    function marcaFinalizado() {
+        fetch('http://127.0.0.1:5000/finalizar').then(data => {
+                senhaAtual.innerHTML = '000';
+                desativaBtn();
+        });
+    }
+
+
+</script>
+</html>

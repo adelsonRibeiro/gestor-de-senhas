@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Senhas</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px; /* Adicionado padding para dispositivos menores */
+            box-sizing: border-box; /* Garante que o padding não afete a largura total */
+        }
+
+        #senha-container {
+            background-color: white;
+            border: 2px solid #800080;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+            width: 90%; /* Largura responsiva */
+            max-width: 500px; /* Largura máxima em telas maiores */
+        }
+
+        #senha {
+            font-size: 3em; /* Reduzido o tamanho da fonte base */
+            color: #333;
+        }
+
+        .botao-container {
+            display: flex;
+            flex-wrap: wrap; /* Permite que os botões quebrem para a próxima linha em telas menores */
+            justify-content: center; /* Centraliza os botões */
+            gap: 10px; /* Espaçamento menor entre os botões */
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .botao {
+            background-color: #800080;
+            color: white;
+            padding: 10px 15px; /* Padding um pouco menor */
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            flex: 1 1 45%; /* Os botões ocupam aproximadamente metade da largura disponível */
+            min-width: 120px; /* Largura mínima para os botões */
+            box-sizing: border-box;
+        }
+
+        .botao:hover {
+            background-color: #660066;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) { /* Para tablets e telas menores */
+            #senha {
+                font-size: 2.5em; /* Tamanho da fonte menor em tablets */
+            }
+        }
+
+        @media (max-width: 480px) { /* Para celulares */
+            #senha {
+                font-size: 2em; /* Tamanho da fonte ainda menor em celulares */
+            }
+            .botao {
+                flex: 1 1 90%; /* Os botões ocupam quase a largura toda em celulares */
+                margin: 5px 0; /* Espaçamento vertical entre os botões */
+            }
+            .botao-container{
+                flex-direction: column;
+                align-items: center;
+
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="senha-container">
+        <h2 >SUA SENHA</h2>
+        <div id="senha">000</div>
+    </div>
+
+    <div class="botao-container">
+        <button class="botao" id='normal' onclick="chamaSenha('N')">NORMAL</button>
+        <button class="botao" id='prioridade' onclick="chamaSenha('P')">PRIORITÁRIO</button>
+    </div>
+
+</body>
+<script>
+    const senha = document.getElementById('senha');
+
+    function chamaSenha(prioridade) 
+        {
+            if (prioridade === 'N'){
+                fetch('/gera_senha_normal')
+                .then(response => response.text())
+                    .then(data => {
+                    console.log(data)
+                    senha.innerHTML = data;
+                });
+            }
+            else if (prioridade === 'P'){
+                fetch('/gera_senha_prioridade')
+                .then(response => response.text())
+                    .then(data => {
+                    console.log(data)
+                    senha.innerHTML = data;
+                });
+            }
+        }
+</script>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+    <title>Painel de Senhas</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px; /* Adicionado padding para dispositivos menores */
+            box-sizing: border-box; /* Garante que o padding não afete a largura total */
+        }
+
+        #senha-container {
+            background-color: white;
+            border: 2px solid #800080;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+            width: 90%; /* Largura responsiva */
+            max-width: 500px; /* Largura máxima em telas maiores */
+        }
+
+        #senha {
+            font-size: 9em; /* Reduzido o tamanho da fonte base */
+            color: #333;
+        }
+
+        .tempo-container {
+            display: flex;
+            flex-wrap: wrap; /* Permite que os botões quebrem para a próxima linha em telas menores */
+            justify-content: center; /* Centraliza os botões */
+            gap: 10px; /* Espaçamento menor entre os botões */
+            width: 90%;
+            max-width: 650px;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) { /* Para tablets e telas menores */
+            #senha {
+                font-size: 2.5em; /* Tamanho da fonte menor em tablets */
+            }
+        }
+
+        @media (max-width: 480px) { /* Para celulares */
+            #senha {
+                font-size: 2em; /* Tamanho da fonte ainda menor em celulares */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="senha-container">
+        <h2 >PROXIMA SENHA</h2>
+        <div id="senha">000</div>
+    </div>
+
+    <div class="tempo-container">
+
+    </div>
+
+</body>
+<script>
+    const socketPainel = io("/senha-painel")
+    const senha = document.getElementById("senha")
+
+    socketPainel.on('message', (msg) => {
+        console.log(msg)
+        senha.innerHTML = msg
+    }
+    )
+</script>
+</html>
