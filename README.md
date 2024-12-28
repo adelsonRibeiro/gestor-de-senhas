@@ -4,7 +4,7 @@ Este projeto é uma aplicação web simples para gerenciamento de senhas em um a
 
 Demonstração
 
-Você pode acessar uma demonstração funcional do projeto clicando aqui. 
+Você pode acessar uma demonstração funcional do projeto [clicando aqui](https://gestor-de-senhas.onrender.com)
 
 Funcionalidades
 
@@ -44,7 +44,7 @@ Como Usar
 
 Clone este repositório:
 
-git clone https://github.com/seu-usuario/seu-repositorio.git
+git clone [https://github.com/seu-usuario/seu-repositorio.git](https://github.com/adelsonRibeiro/gestor-de-senhas/)
 
 Instale as dependências:
 
