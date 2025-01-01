@@ -176,18 +176,9 @@ class Connection:
         finally:
             self.fecha_conexao()
     
-    def marca_ausente(self):
+    def finaliza_atendimento(self, status):
         try:
-            self.cursor.execute(f"UPDATE senhas SET status='Ausente' WHERE status = 'Atendimento'")
-            self.conexao.commit()
-        except Exception as e:
-            raise RuntimeError(f'Erro: {e} nao foi possivel realizar a consulta') from e
-        finally:
-            self.fecha_conexao()
-
-    def finaliza_atendimento(self):
-        try:
-            self.cursor.execute(f"UPDATE senhas SET status='Finalizado' WHERE status = 'Atendimento'")
+            self.cursor.execute(f"UPDATE senhas SET status='{status}' WHERE status = 'Atendimento'")
             self.conexao.commit()
         except Exception as e:
             raise RuntimeError(f'Erro: {e} nao foi possivel realizar a consulta') from e

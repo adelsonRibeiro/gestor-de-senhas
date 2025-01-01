@@ -48,7 +48,7 @@ def chamar_cliente():
 def finalizar():
     try:
         conexao = Connection(caminho_banco)
-        conexao.finaliza_atendimento()
+        conexao.finaliza_atendimento("Finalizado")
         mensagem()
         return 'ok'
     except Exception as e:
@@ -59,7 +59,7 @@ def finalizar():
 def ausente():
     try:
         conexao = Connection(caminho_banco)
-        conexao.marca_ausente()
+        conexao.finaliza_atendimento("Ausente")
         mensagem()
         return 'ok'
     except Exception as e:
